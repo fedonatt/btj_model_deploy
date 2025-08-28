@@ -47,7 +47,7 @@ best_model_name = None
 for model_name, model in models.items():
     with mlflow.start_run(run_name=f"{model_name}_pipeline") as run:
         pipeline = Pipeline([
-            ("scaler", StandardScaler()),
+            ("scaler", StandardScaler()), # pipelinenya ternyata langsung fit transfrom mas jadi scalernya pakai langsung aja 
             ("model", model)
         ])
 
@@ -74,3 +74,9 @@ for model_name, model in models.items():
             artifact_path="model",
             registered_model_name=f"{REGISTERED_MODEL_PREFIX}_{model_name}_Pipeline"
         )
+        if f1 > best_score: 
+            best_score = f1
+            best_model = pipeline
+            best_model_name = model_name
+
+print(f"Best Model: {best_model_name} | F1 Score: {best_score:.4f}")
